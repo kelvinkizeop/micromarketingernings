@@ -1,0 +1,629 @@
+.header{
+    background-color: rgba(255, 255, 255, 0.5); /* Transparent white */
+    backdrop-filter: blur(10px); /* Blur effect */
+    position: fixed;
+    top: 0%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    color: black;
+    padding: 10px 20px;
+    position: sticky;
+    z-index: 1000;
+}
+html {
+    scroll-behavior: smooth;
+} 
+.logo-container {
+    display: flex;
+    align-items: center;
+}  
+.logo {
+    width: 100px;  /* Adjust logo size */
+    height: auto;
+    margin-right: 10px; /* Space between logo and name */
+}    
+.website-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: linear-gradient(to left, rgba(128, 0, 128, 0.5), rgba(163, 163, 5, 0.5));
+    -webkit-background-clip: text;
+    color: transparent;
+}    
+.nav{
+display: flex;
+align-items: center;
+justify-content: center;
+flex-grow: 1; 
+
+}
+.nav-list {
+list-style: none;
+display: flex;
+gap: 20px;
+cursor: pointer;
+}
+.nav-list a {
+text-decoration: none;
+color: #333;
+font-size: 1rem;
+padding: 8px;
+}
+.nav-list :hover {
+color: purple; 
+}
+.register-container{
+display: flex;
+gap: 10px;
+margin:5px;
+padding: 0;
+}
+.sign-up{
+background-color: yellow;
+color: black;
+border: yellow;
+border-radius: 10px;
+border-style: solid;
+font-size: 1rem;
+}
+.log-in{
+    background-color: purple;
+    border-radius: 10px;
+    border-style: solid;
+    color: white;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    font-size: 1rem;
+}
+.sign-up:hover {
+background-color: purple;
+border:1px purple;
+color: #ffff;
+cursor: pointer;
+transition-duration: 2s;
+}
+.log-in:hover{
+opacity: 0.5;
+}
+
+.hamburger {
+display: none;
+flex-direction: column;
+gap: 2px;
+cursor: pointer;
+width: 20px;
+height: 25px;
+}
+.hamburger .bar {
+width: 100%;
+height: 20px;
+background-color: purple;
+border-radius: 5px;
+}
+
+.hamburger.hide {
+display: none;
+}
+
+.dropdown-menu {
+display: none;
+position: fixed;
+top: 80px;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 1100; 
+justify-content: center;
+align-items: center;
+text-align: center;
+opacity: 0;
+transform: translateY(-30px);
+transition: opacity 3s ease, transform 3s ease;
+}
+
+.dropdown-menu.show {
+display: flex;
+opacity: 1;  
+transform: translateY(0);  
+}
+.dropdown-list {
+list-style: none;
+padding: 0;
+background-color:rgba(128, 0, 128, 0.5);
+border-radius: 10px;
+width: 70%;
+
+}
+.dropdown-list li {
+margin: 10px 0;
+}
+.dropdown-list a {
+display: block;
+padding: 10px;
+color: white;
+text-decoration: none;
+font-size: 1rem;
+}
+.dropdown-list a:hover {
+background-color: purple;
+color: white;
+}
+
+.close-icon {
+    position: relative;
+    font-weight: bolder;
+    top: 1px;
+    right: 0px;
+    font-size: 1rem;
+    color: white;
+    cursor: pointer;
+    z-index: 1100;
+    padding: 10px;
+}
+body {
+background:white;
+overflow-x: hidden;
+font-family: Arial, sans-serif;
+}
+
+
+.header.sticky {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+transition: top 0.3s ease-in-out;
+backdrop-filter: blur(15px);
+} 
+.preamble{
+    background-color: purple;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 70px;
+    width: 89%;
+    height: 150px;
+    position: relative;
+    min-height: 40vh;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    margin-bottom: 50px;
+    text-align: center;
+}
+.preamble h2{
+    font-size: 5rem;
+    margin-bottom: 20px;
+    font-weight: bolder;
+    margin-left: 50px;
+    
+}
+.title{
+    font-size: 2.4rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: purple;
+}
+
+.plans{
+    border-radius: 20px;
+
+}
+.all-plans{
+    padding: 20px 0;
+    text-align: center;
+}
+.plans-layout{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+    gap: 30px; 
+    justify-items: center; 
+    align-items: center;
+    padding: 20px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+.basic-plan{
+    background-color: white;
+    border-color:  blue;
+    border-style: groove;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    height: 300px;
+    width: 200px;
+    margin-left: 10px;
+    padding-top: 70px;
+    border: 5px solid blue;
+}
+.basic-plan h3{
+          color: blue;
+          font-weight: bolder;
+}
+.basic-plan p{
+    font-size: medium;
+    font-weight: bold;
+}
+.basic-button{
+    background-color: blue;
+    color: white;
+    border-radius: 10px;
+    border: blue;
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding: 10px;
+    height: 50px;
+    width: 100px;
+}
+.visa-plan{
+    background-color:white;
+    border-color: peru; 
+    border-style: groove;
+    height: 300px;
+    width: 200px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    padding-top: 70px;
+    border: 5px solid peru;
+
+}
+.visa-plan h3{
+    color: peru;
+    font-weight: bolder;
+}
+.visa-plan p{
+    font-size: medium;
+    font-weight: bold;
+}
+.visa-button{
+    background-color: peru;
+    color: white;
+    border-radius: 10px;
+    border: peru;
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding: 10px;
+    height: 50px;
+    width: 100px;
+
+}
+.diamond-plan{
+    background-color: white;
+    border-color: aqua;
+    border-style: groove;
+    height: 300px;
+    width: 200px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    margin-left: 10px;
+    padding-top: 70px;
+    border: 5px solid aqua;
+  
+}
+.diamond-plan h3{
+    color: aqua;
+    font-weight: bolder;
+
+}
+.diamond-plan p{
+    font-size: medium;
+    font-weight: bold;
+}
+.diamond-button{
+    background-color: aqua;
+    color: white;
+    border-radius: 10px;
+    border: aqua;
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding: 10px;
+    height: 50px;
+    width: 100px;
+}
+.gold-plan{
+    background-color: white;
+    border-color: purple;
+    border-style: groove;
+    height: 300px;
+    width: 200px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    padding-top: 70px;
+    border: 5px solid purple;
+}
+.gold-plan h3{
+    color: purple;
+    font-weight: bolder;
+}
+.gold-plan p{
+   font-size: medium;
+   font-weight: bold;
+}
+.gold-button{
+    background-color: purple;
+    color: white;
+    border-radius: 10px;
+    border: purple;
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding: 10px;
+    height: 50px;
+    width: 100px;
+}
+
+.basic-plan:hover, .visa-plan:hover, .diamond-plan:hover, .gold-plan:hover {
+    transform: translateY(-10px); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.6); 
+}
+
+.basic-button:hover, .visa-button:hover, .diamond-button:hover, .gold-button:hover {
+    background-color: darkgray;
+    cursor: pointer; 
+    transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.info-section {
+    width: 100%;
+    background-color: black;
+    border-radius: 10px;
+    padding-top: 20px;
+}
+.info-title {
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 20px;
+    background-color: black;
+    transition: background-color 0.3s;
+    position: relative;
+}
+.info-title:hover {
+    background-color: purple
+}
+
+.arrow {
+    font-size: 0.7em; 
+    transition: transform 0.3s ease;
+    position: absolute; 
+    right: 20px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    color: aquamarine;
+}
+.x-icon {
+    font-size: 1em;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    position: absolute; 
+    right: 20px; 
+    top: 50%; 
+    transform: translateY(-50%);
+    opacity: 0; 
+    color: white;
+}
+.info-item.open .x-icon {
+    opacity: 1; 
+    transition: opacity 0.3s ease;
+}
+
+.info-item.open .arrow {
+    transform: rotate(180deg);
+    opacity: 0; 
+}
+
+.info-item.active .info-content {
+    display: block;
+}
+.info-content {
+    padding: 20px;
+    display: none;
+    color: white;
+    background-color: #333;
+    border-left: 5px solid purple;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+/* Accordion Effect */
+.info-item {
+    margin-bottom: 20px;
+}
+
+.info-content ul {
+    padding-left: 20px;
+}
+.info-content a {
+    color: purple;
+    text-decoration: none;
+}
+.info-content a:hover {
+    text-decoration: underline;
+}
+
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    background-color: black; 
+    color: white; 
+    font-size: 14px;
+    font-family: Arial, sans-serif; 
+}
+.footer p {
+    margin: 0;
+}
+
+@media (min-width: 320px) and (max-width: 499px)  {
+    .plans-layout {
+        grid-template-columns: 1fr; 
+        width: auto;
+       
+    }
+
+    .basic-plan, .visa-plan, .diamond-plan, .gold-plan {
+        padding: 10px; 
+        width: fit-content;
+        width: 100%; 
+        height: auto;
+    }
+
+    .basic-plan h3, .visa-plan h3, .diamond-plan h3, .gold-plan h3 {
+        font-size: 1.2rem; 
+    }
+
+    .basic-plan p, .visa-plan p, .diamond-plan p, .gold-plan p {
+        font-size: 0.9rem; 
+    }
+
+    .basic-button, .visa-button, .diamond-button, .gold-button {
+        font-size: 0.7rem;
+        padding: 6px; 
+       margin-bottom: 10px;
+    }
+    .plans{
+        margin-bottom: 10px;
+    }
+    .info-title {
+        font-size: 0.8rem;
+    }
+    .info-content {
+        font-size: 0.6rem;
+        padding: 8px;
+    }
+    .footer {
+        font-size: 0.6rem; 
+        padding: 8px;
+    }
+
+    .preamble{
+         padding: 10px;
+         margin: 10px;
+     }
+     .preamble h2 {
+         font-size: 1.5rem;
+         margin-left: 25px;
+         padding-right: 10px;
+        
+
+    }
+     .title{
+         font-size: 1.3rem;
+
+        }
+
+    .nav-list {
+        display: none; 
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        margin-top: 10px;
+    }
+    .nav-list.open {
+        display: flex;
+    }
+    .hamburger {
+        display: flex; 
+        margin-left: 5%;
+    }
+    .register-container {
+        display: none;  
+    }
+    .dropdown-list a {
+        font-size: 0.8rem;
+        padding: 5px;
+
+    }
+    .logo{
+        width: 50px;
+    }
+    .website-name {
+        font-size: 0.9rem;
+        margin-left: 8px;
+    }
+    }
+
+
+
+
+
+@media (min-width: 500px) and (max-width: 800px) {
+    .plans-layout {
+        grid-template-columns: 1fr 1fr; 
+    
+    }
+
+    .basic-plan, .visa-plan, .diamond-plan, .gold-plan {
+        padding: 10px; 
+        width: 90%;
+    }
+
+    .basic-button, .visa-button, .diamond-button, .gold-button {
+        font-size: 0.9rem; 
+        padding: 8px;
+    }
+
+    
+    .preamble{
+        padding: 20px;
+        margin: 20px;
+    }
+    .preamble h2 {
+        font-size: 1.8rem;
+        margin-left: 35px;
+        padding-right: 10px;
+       
+
+   }
+    .title{
+        font-size: 1.5rem;
+
+       }
+
+       .logo{
+        width: 70px;
+    }
+    .website-name {
+        font-size: 1.2rem;
+        margin-left: 10px;
+    }
+
+    .nav-list {
+        display: none; 
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        margin-top: 10px;
+    }
+    .nav-list.open {
+        display: flex;
+    }
+    .hamburger {
+        display: flex; 
+        margin-left: 45%;
+    }
+    .register-container {
+        display: none;  
+    }
+    .dropdown-list a {
+        font-size: 1.2rem;
+        padding: 5px;
+
+    }
+}
+
+@media (min-width: 810px) and (max-width: 1200px){
+    .preamble{
+        padding: 0px;
+        margin: 60px;
+    }
+    .preamble h2 {
+        font-size: 2.5rem;
+        margin-left: 50px;
+        padding-right: 10px;
+    }
+}
+

@@ -1,0 +1,214 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f4f7fc;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.admin-dashboard {
+    display: flex;
+    width: 80%;
+    min-height: 100vh;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.sidebar {
+    background-color: #2C3E50;
+    color: white;
+    width: 250px;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+    background-color: #34495E;
+}
+
+.content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+h2 {
+    color: #2C3E50;
+    margin-bottom: 20px;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.stat {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    flex-basis: 30%;
+}
+
+.stat h3 {
+    font-size: 18px;
+    color: #34495E;
+}
+
+.stat p {
+    font-size: 24px;
+    color: #2C3E50;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+table th, table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #2C3E50;
+    color: white;
+}
+
+table td {
+    font-size: 16px;
+    color: #34495E;
+}
+
+form input[type="number"],
+form select,
+form button {
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+}
+
+form input[type="number"],
+form select {
+    width: 120px;
+}
+
+form button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #2980b9;
+}
+
+form button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
+
+a {
+    text-decoration: none;
+    color: #3498db;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (min-width: 320px) and (max-width: 768px) {
+    .admin-dashboard {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 13px;
+    }
+
+    .content {
+        padding: 13px;
+    }
+
+    .stats {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .stat {
+        margin-bottom: 20px;
+        flex-basis: 100%;
+    }
+    .stat h3 {
+        font-size: 15px;
+    }
+    
+    .stat p {
+        font-size: 20px;
+     
+    }
+    
+   .sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    }
+
+
+    table th, table td {
+        font-size: 10px;
+        padding: 10px;
+    }
+
+    form input[type="number"],
+    form select {
+        width: auto;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}
+
