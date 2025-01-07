@@ -1,4 +1,4 @@
-<?php
+<?php 
 include('includes/db.php');
 session_start();
 
@@ -7,60 +7,62 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Check if the user exists
-    $sql = "SELECT * FROM users WHERE username = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Check if the user exists in PostgreSQL
+    $sql = "SELECT * FROM users WHERE username = $1";
+    $stmt = pg_query_params($conn, $sql, array($username));  // Execute the query with parameter binding
 
-    if ($result->num_rows > 0) {
-        // Fetch user data
-        $user = $result->fetch_assoc();
+    if ($stmt) {
+        $user = pg_fetch_assoc($stmt);  // Fetch user data
 
-        // Verify password
-        if (password_verify($password, $user['password'])) {
-            // Set session variable for user login
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['is_admin'] = $user['is_admin'];
+        if ($user) {
+            // Verify password
+            if (password_verify($password, $user['password'])) {
+                // Set session variable for user login
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['is_admin'] = $user['is_admin'];
 
-              // Redirect to the admin dashboard if the user is an admin
-              if ($user['is_admin'] == 1) {
-                header("Location: /backend/admin.php"); // Admin page
-                exit();
+                // Redirect to the admin dashboard if the user is an admin
+                if ($user['is_admin'] == 1) {
+                    header("Location: /backend/admin.php"); // Admin page
+                    exit();
+                } else {
+                    // Redirect to the regular user dashboard
+                    header("Location: /backend/dashboard.php");
+                    exit();
+                }
             } else {
-                // Redirect to the regular user dashboard
-                header("Location: /backend/dashboard.php");
-                exit();
-            }
-
-
-        } else {
-          echo "<script>
+                echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         var errorMessage = document.getElementById('error-message');
                         errorMessage.innerText = 'Invalid credentials.';
                         errorMessage.style.display = 'block';
                     });
-                  </script>";
-        }
-
-
-
-    } else {
-        echo "<script>
+                </script>";
+            }
+        } else {
+            echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     var errorMessage = document.getElementById('error-message');
                     errorMessage.innerText = 'No user found with that username.';
                     errorMessage.style.display = 'block';
                 });
               </script>";
+        }
+    } else {
+        echo "<script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var errorMessage = document.getElementById('error-message');
+                    errorMessage.innerText = 'Error in database query.';
+                    errorMessage.style.display = 'block';
+                });
+              </script>";
     }
 }
 
-$conn->close();
+pg_close($conn);  // Close PostgreSQL connection
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
