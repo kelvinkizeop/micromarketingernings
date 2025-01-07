@@ -5,16 +5,29 @@ session_start();
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 
-    $sql = "SELECT * FROM transactions WHERE user_id = ? ORDER BY transaction_date DESC";
+    // Prepare SQL query
+    $sql = "SELECT * FROM transactions WHERE user_id = :user_id ORDER BY transaction_date DESC";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $user_id);  
+
+    // Bind the user_id parameter
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+
+    // Execute the query
     $stmt->execute();
-    $result = $stmt->get_result();
+
+    // Fetch the results
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Optionally, you can loop through $result if needed:
+    // foreach ($result as $transaction) {
+    //     // Process each transaction here
+    // }
 } else {
     echo "You must be logged in to view this page.";
     exit;
 }
 ?>
+
 
 
 <!DOCTYPE html>
