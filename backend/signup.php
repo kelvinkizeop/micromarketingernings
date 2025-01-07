@@ -1,5 +1,5 @@
 <?php
-include('includes/db.php');
+include('includes/db.php'); // Assuming your db.php is modified for PostgreSQL
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Get form data
@@ -8,13 +8,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
 
     // Check if username already exists
-    $sql = "SELECT * FROM users WHERE username = ?";
+    $sql = "SELECT * FROM users WHERE username = :username";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
+    $stmt->bindParam(':username', $username, PDO::PARAM_STR);
     $stmt->execute();
-    $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
+    if ($stmt->rowCount() > 0) {
         // Output error message for username taken
         echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -25,9 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </script>";
     } else {
         // Insert new user into the database
-        $sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO users (username, password, email) VALUES (:username, :password, :email)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sss", $username, $password, $email);
+        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+        $stmt->bindParam(':password', $password, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        
         if ($stmt->execute()) {
             // Redirect to login page after successful signup
             header("Location: /backend/login.php");
@@ -37,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo "<script>
             document.addEventListener('DOMContentLoaded', function() {
                 var errorMessage = document.getElementById('error-message');
-                errorMessage.innerText = 'Error: ' + " . json_encode($conn->error) . ";
+                errorMessage.innerText = 'Error: ' + " . json_encode($conn->errorInfo()) . ";
                 errorMessage.style.display = 'block';
             });
             </script>";
@@ -45,9 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-$conn->close();
+$conn = null; // Close the connection after execution
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
