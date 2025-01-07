@@ -1,16 +1,17 @@
 <?php
-$host = 'localhost';       // Host
-$username = 'root';        // Database username
-$password = '';            // Database password
-$dbname = 'sample'; // Database name (change this to your actual DB name)
+// Database connection parameters
+$host = 'dpg-ctu8tqt2ng1s739c0o70-a.frankfurt-postgres.render.com';  // PostgreSQL hostname
+$port = '5432';  // Default PostgreSQL port
+$dbname = 'mme_database';  // Database name
+$username = 'mme_database_user';  // Username
+$password = '7IxEipvaBxtGRIJHVel3tLEi0hPE0L0E';  // Password
 
-// Create connection
-$conn = new mysqli($host, $username, $password, $dbname);
+// Create connection to PostgreSQL
+$conn = pg_connect("host=$host port=$port dbname=$dbname user=$username password=$password");
 
 // Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+if (!$conn) {
+    die("Connection failed: " . pg_last_error());
 }
-
-
 ?>
+
