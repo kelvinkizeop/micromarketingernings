@@ -1,3 +1,4 @@
+
 <?php
 session_start();  
 
@@ -5,65 +6,52 @@ if (!isset($_SESSION['form_submitted'])) {
     $_SESSION['form_submitted'] = false;
 }
 
-
-include('includes/db.php');
+include('includes/db.php');  // Use the new db.php for PostgreSQL
 
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];  
-  
 
-   
-    $sql = "SELECT * FROM users WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc(); 
-    $_SESSION['username'] = $username;  
+    // Get user details
+    $sql = "SELECT * FROM users WHERE id = $1";
+    $result = pg_query_params($conn, $sql, array($user_id));
+    $user = pg_fetch_assoc($result); 
+    $_SESSION['username'] = $user['username']; 
 
-    //GET REFFERAL CODE
+    // Get referral code
     if (empty($user['referral_code'])) {
         $referral_code = "REF" . $user_id; 
-        $update_sql = "UPDATE users SET referral_code = ? WHERE id = ?";
-        $update_stmt = $conn->prepare($update_sql);
-        $update_stmt->bind_param("si", $referral_code, $user_id);
-        $update_stmt->execute();
+        $update_sql = "UPDATE users SET referral_code = $1 WHERE id = $2";
+        pg_query_params($conn, $update_sql, array($referral_code, $user_id));
     } else {
         $referral_code = $user['referral_code']; 
     }
 
     $referral_link = "https://micromarketingearnings.com/referral.php?code=" . $referral_code;
 
-
 } else {
-  
     $user = null;
     $referral_link = "#";
-
 }
 
- 
-  
- //HANDLE DEPOSIT 
-$sql = "SELECT * FROM transactions WHERE user_id = ? ORDER BY transaction_date DESC";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id); 
-$stmt->execute();
-$result = $stmt->get_result();
 
+// Fetch the most recent transactions for PostgreSQL
+$sql = "SELECT * FROM transactions WHERE user_id = $1 ORDER BY transaction_date DESC";
+$stmt = pg_query_params($conn, $sql, array($user_id));  // Execute the query with parameter binding
 
+if ($stmt) {
+    $result = pg_fetch_all($stmt);  // Get the result set as an associative array
+} else {
+    echo "<script>alert('Error fetching transactions.');</script>";
+}
+// Handle Deposit
 if (isset($_POST['deposit_now'])) {
     $deposit_amount = $_POST['deposit_amount'];
     $payment_method = $_POST['payment_method'];
-   
 
     if ($deposit_amount > 0 && !empty($payment_method)) {
-        $transaction_sql = "INSERT INTO transactions (user_id, transaction_type, amount, payment_method, status)
-                             VALUES (?, 'Deposit', ?, ?, 'pending')";
-        $transaction_stmt = $conn->prepare($transaction_sql);
-        $transaction_stmt->bind_param("ids", $user_id, $deposit_amount, $payment_method);
-        $transaction_stmt->execute();
-
+        $transaction_sql = "INSERT INTO transactions (user_id, transaction_type, amount, payment_method, status) 
+                            VALUES ($1, 'Deposit', $2, $3, 'pending')";
+        pg_query_params($conn, $transaction_sql, array($user_id, $deposit_amount, $payment_method));
 
         echo "<script>alert('Deposit Pending approval.');</script>";
     } else {
@@ -71,28 +59,20 @@ if (isset($_POST['deposit_now'])) {
     }
 }
 
-
 // Handle Withdrawal
 if (isset($_POST['withdraw_now'])) {
     $withdraw_amount = $_POST['withdraw_amount'];
     $withdraw_method = $_POST['withdraw_method'];
     $wallet_address = $_POST['wallet_address'];
-   
 
     if ($withdraw_amount > 0 && !empty($withdraw_method) && !empty($wallet_address)) {
-    
         if ($user['account_balance'] >= $withdraw_amount) {
-         
-            $transaction_sql = "INSERT INTO transactions (user_id, transaction_type, amount, payment_method, wallet_address, status)
-                                 VALUES (?, 'Withdrawal', ?, ?, ?, 'Pending')";
-            $transaction_stmt = $conn->prepare($transaction_sql);
-            $transaction_stmt->bind_param("idss", $user_id, $withdraw_amount, $withdraw_method, $wallet_address);
-            $transaction_stmt->execute();
+            $transaction_sql = "INSERT INTO transactions (user_id, transaction_type, amount, payment_method, wallet_address, status) 
+                                 VALUES ($1, 'Withdrawal', $2, $3, $4, 'Pending')";
+            pg_query_params($conn, $transaction_sql, array($user_id, $withdraw_amount, $withdraw_method, $wallet_address));
 
-            $update_balance_sql = "UPDATE users SET account_balance = account_balance - ? WHERE id = ?";
-            $update_balance_stmt = $conn->prepare($update_balance_sql);
-            $update_balance_stmt->bind_param("di", $withdraw_amount, $user_id);
-            $update_balance_stmt->execute();
+            $update_balance_sql = "UPDATE users SET account_balance = account_balance - $1 WHERE id = $2";
+            pg_query_params($conn, $update_balance_sql, array($withdraw_amount, $user_id));
 
             echo "<script>alert('Withdrawal successful! Pending approval.');</script>";
         } else {
@@ -102,62 +82,46 @@ if (isset($_POST['withdraw_now'])) {
         echo "<script>alert('Invalid withdrawal details!');</script>";
     }
 }
-//ACCOUNT BALANCE 
-$sql = "SELECT account_balance FROM users WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $_SESSION['user_id']);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-// TRANSACTION TABLE
-$sql = "SELECT * FROM transactions WHERE user_id = ? ORDER BY transaction_date DESC LIMIT 5";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);  
-$stmt->execute();
-$result = $stmt->get_result();
 
-//INVESTMENT PLANS
+// Account Balance 
+$sql = "SELECT account_balance FROM users WHERE id = $1";
+$stmt = pg_query_params($conn, $sql, array($_SESSION['user_id']));
+$result = pg_fetch_assoc($stmt);
+$user = $result;
+
+// Transaction Table 
+$sql = "SELECT * FROM transactions WHERE user_id = $1 ORDER BY transaction_date DESC LIMIT 5";
+$stmt = pg_query_params($conn, $sql, array($user_id));  
+$result = pg_fetch_all($stmt);
+
+// Investment Plans
 $plan_sql = "SELECT * FROM investment_plans";
-$plan_stmt = $conn->prepare($plan_sql);
-$plan_stmt->execute();
-$plans_result = $plan_stmt->get_result();
+$plan_stmt = pg_query($conn, $plan_sql);
+$plans_result = pg_fetch_all($plan_stmt);
 
-//REINVEST/INVEST SECTION
+// Reinvest/Invest Section
 if (isset($_POST['invest_now']) || isset($_POST['reinvest_now'])) {
     $investment_amount = $_POST['investment_amount'];
     $selected_plan = $_POST['reinvestment_plan']; 
 
-    $plan_sql = "SELECT * FROM investment_plans WHERE plan_name = ?";
-    $plan_stmt = $conn->prepare($plan_sql);
-    $plan_stmt->bind_param("s", $selected_plan); 
-    $plan_stmt->execute();
-    $plan_result = $plan_stmt->get_result();
-    $plan = $plan_result->fetch_assoc();
+    $plan_sql = "SELECT * FROM investment_plans WHERE plan_name = $1";
+    $plan_stmt = pg_query_params($conn, $plan_sql, array($selected_plan)); 
+    $plan_result = pg_fetch_assoc($plan_stmt);
 
-    if ($investment_amount >= $plan['min_investment'] && $investment_amount <= $plan['max_investment']) {
+    if ($investment_amount >= $plan_result['min_investment'] && $investment_amount <= $plan_result['max_investment']) {
         if ($user['account_balance'] >= $investment_amount) {
-    
             $transaction_type = isset($_POST['invest_now']) ? 'Invest' : (isset($_POST['reinvest_now']) ? 'Reinvest' : '');
 
-   
             $transaction_sql = "INSERT INTO transactions (user_id, transaction_type, amount, payment_method, status, transaction_date)
-                                 VALUES (?, ?, ?, 'N/A', 'Completed', NOW())"; 
-            $transaction_stmt = $conn->prepare($transaction_sql);
-            $transaction_stmt->bind_param("isd", $user_id, $transaction_type, $investment_amount); 
-            $transaction_stmt->execute();
+                                 VALUES ($1, $2, $3, 'N/A', 'Completed', NOW())"; 
+            pg_query_params($conn, $transaction_sql, array($user_id, $transaction_type, $investment_amount)); 
 
+            $update_balance_sql = "UPDATE users SET account_balance = account_balance - $1 WHERE id = $2";
+            pg_query_params($conn, $update_balance_sql, array($investment_amount, $user_id));
 
-            $update_balance_sql = "UPDATE users SET account_balance = account_balance - ? WHERE id = ?";
-            $update_balance_stmt = $conn->prepare($update_balance_sql);
-            $update_balance_stmt->bind_param("di", $investment_amount, $user_id);
-            $update_balance_stmt->execute();
-
-           
             $investment_sql = "INSERT INTO user_investments (user_id, plan_id, amount_invested, start_date, end_date, status)
-                               VALUES (?, ?, ?, NOW(), DATE_ADD(NOW(), INTERVAL ? DAY), 'Active')";
-            $investment_stmt = $conn->prepare($investment_sql);
-            $investment_stmt->bind_param("iiid", $user_id, $plan['id'], $investment_amount, $plan['duration_days']);
-            $investment_stmt->execute();
+                               VALUES ($1, $2, $3, NOW(), NOW() + INTERVAL '$4 days', 'Active')";
+            pg_query_params($conn, $investment_sql, array($user_id, $plan_result['id'], $investment_amount, $plan_result['duration_days']));
 
             $_SESSION['form_submitted'] = true;  
 
@@ -172,24 +136,20 @@ if (isset($_POST['invest_now']) || isset($_POST['reinvest_now'])) {
     } else {
         echo "<script>alert('Investment amount does not meet the required range!');</script>";
     }
-
 }
 
-// FOR UPDATING CURRENT INVESTMENT CARD
+// For updating current investment card
 $current_investment_sql = "
     SELECT 
         ui.amount_invested, ui.start_date, ui.end_date, ui.status, 
         ip.plan_name, ip.daily_profit_percentage, ip.duration_days
     FROM user_investments ui
     JOIN investment_plans ip ON ui.plan_id = ip.id
-    WHERE ui.user_id = ? AND ui.status = 'Active'
+    WHERE ui.user_id = $1 AND ui.status = 'Active'
     ORDER BY ui.start_date DESC LIMIT 1
 ";
-$current_investment_stmt = $conn->prepare($current_investment_sql);
-$current_investment_stmt->bind_param("i", $user_id);
-$current_investment_stmt->execute();
-$current_investment_result = $current_investment_stmt->get_result();
-$current_investment = $current_investment_result->fetch_assoc();
+$current_investment_stmt = pg_query_params($conn, $current_investment_sql, array($user_id));
+$current_investment = pg_fetch_assoc($current_investment_stmt);
 
 if ($current_investment) {
     $plan_name = $current_investment['plan_name'];
@@ -207,8 +167,7 @@ if ($current_investment) {
     $daily_profit_percentage = 0;
 }
 
-
-$conn->close();  
+pg_close($conn);  
 ?>
 
 
