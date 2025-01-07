@@ -15,17 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-
-
-        "<script>
+        // Output error message for username taken
+        echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
             var errorMessage = document.getElementById('error-message');
             errorMessage.innerText = 'Username already taken.';
             errorMessage.style.display = 'block';
         });
-      </script>";
-
-
+        </script>";
     } else {
         // Insert new user into the database
         $sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
@@ -35,22 +32,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Redirect to login page after successful signup
             header("Location: /backend/login.php");
             exit();
-
-
         } else {
-            "<script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        var errorMessage = document.getElementById('error-message');
-                        errorMessage.innerText = 'Error.';
-                        errorMessage.style.display = 'block';. $conn->error;
-                    });
-                  </script>";
+            // Output error message for failure during insertion
+            echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var errorMessage = document.getElementById('error-message');
+                errorMessage.innerText = 'Error: ' + " . json_encode($conn->error) . ";
+                errorMessage.style.display = 'block';
+            });
+            </script>";
         }
     }
 }
 
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
